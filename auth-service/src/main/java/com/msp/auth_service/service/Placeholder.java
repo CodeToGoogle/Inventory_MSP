@@ -1,1 +1,0 @@
-package com.msp.auth_service.service; public class Placeholder {}

@@ -1,1 +1,0 @@
-package com.msp.auth_service.dto; public class Placeholder {}
