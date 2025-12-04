@@ -1,0 +1,86 @@
+-- V1__core_security_tables.sql
+-- Core security tables: Users, Roles, UserRoles, Objects, ObjectPermissions, ScheduledJobs, ScheduledJobHistory
+
+-- Users Table
+CREATE TABLE Users (
+ UserID INT PRIMARY KEY AUTO_INCREMENT,
+ UserName VARCHAR(100) UNIQUE NOT NULL,
+ EncryptedPassword VARCHAR(255) NOT NULL,
+ UserType ENUM('Admin', 'Manager', 'User', 'Operator') NOT NULL,
+ IsActive BOOLEAN DEFAULT TRUE,
+ CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Roles Table
+CREATE TABLE Roles (
+ RoleID INT PRIMARY KEY AUTO_INCREMENT,
+ RoleName VARCHAR(50) UNIQUE NOT NULL,
+ Description TEXT,
+ CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- UserRoles Table
+CREATE TABLE UserRoles (
+ RecID INT PRIMARY KEY AUTO_INCREMENT,
+ UserID INT NOT NULL,
+ RoleID INT NOT NULL,
+ AssignedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
+ FOREIGN KEY (RoleID) REFERENCES Roles(RoleID) ON DELETE CASCADE,
+ UNIQUE KEY unique_user_role (UserID, RoleID)
+);
+
+-- Objects Table
+CREATE TABLE Objects (
+ ObjectID INT PRIMARY KEY AUTO_INCREMENT,
+ ObjectType VARCHAR(50) NOT NULL,
+ ObjectParent INT NULL,
+ ObjectName VARCHAR(100) NOT NULL,
+ ObjectPath VARCHAR(500),
+ FOREIGN KEY (ObjectParent) REFERENCES Objects(ObjectID),
+ UNIQUE KEY unique_object_name (ObjectType, ObjectName)
+);
+
+-- ObjectPermissions Table
+CREATE TABLE ObjectPermissions (
+ PermissionID INT PRIMARY KEY AUTO_INCREMENT,
+ RoleID INT NOT NULL,
+ ObjectID INT NOT NULL,
+ Access BOOLEAN DEFAULT FALSE,
+ Edit BOOLEAN DEFAULT FALSE,
+ Delete BOOLEAN DEFAULT FALSE,
+ Print BOOLEAN DEFAULT FALSE,
+ Attach BOOLEAN DEFAULT FALSE,
+ AddNotes BOOLEAN DEFAULT FALSE,
+ Approve BOOLEAN DEFAULT FALSE,
+ Reject BOOLEAN DEFAULT FALSE,
+ Reset BOOLEAN DEFAULT FALSE,
+ FOREIGN KEY (RoleID) REFERENCES Roles(RoleID) ON DELETE CASCADE,
+ FOREIGN KEY (ObjectID) REFERENCES Objects(ObjectID) ON DELETE CASCADE,
+ UNIQUE KEY unique_role_object (RoleID, ObjectID)
+);
+
+-- ScheduledJobs Table
+CREATE TABLE ScheduledJobs (
+ JobID INT PRIMARY KEY AUTO_INCREMENT,
+ JobName VARCHAR(100) NOT NULL,
+ ScriptName VARCHAR(255) NOT NULL,
+ NextStartDateTime DATETIME NOT NULL,
+ Frequency INT NOT NULL,
+ FrequencyType ENUM('Minutes', 'Hours', 'Days', 'Weeks', 'Months') NOT NULL,
+ IsActive BOOLEAN DEFAULT TRUE,
+ LastRunDateTime DATETIME NULL,
+ CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ScheduledJobHistory Table
+CREATE TABLE ScheduledJobHistory (
+ HistoryID INT PRIMARY KEY AUTO_INCREMENT,
+ JobID INT NOT NULL,
+ RunDateTime DATETIME NOT NULL,
+ Status ENUM('Success', 'Failed', 'Running') NOT NULL,
+ Description TEXT,
+ ErrorDetails TEXT,
+ FOREIGN KEY (JobID) REFERENCES ScheduledJobs(JobID) ON DELETE CASCADE
+);

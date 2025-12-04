@@ -1,0 +1,1 @@
+package com.msp.inventory_manufacturing_service.controller; public class Placeholder {}

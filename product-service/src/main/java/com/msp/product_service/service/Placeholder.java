@@ -1,0 +1,1 @@
+package com.msp.product_service.service; public class Placeholder {}

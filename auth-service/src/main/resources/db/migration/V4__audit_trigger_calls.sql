@@ -1,0 +1,33 @@
+-- V4__audit_trigger_calls.sql
+-- Calls to CreateAuditTrigger for the tables (run after the procedure and after tables exist)
+
+CALL CreateAuditTrigger('Users');
+CALL CreateAuditTrigger('Roles');
+CALL CreateAuditTrigger('UserRoles');
+CALL CreateAuditTrigger('Objects');
+CALL CreateAuditTrigger('ObjectPermissions');
+CALL CreateAuditTrigger('ScheduledJobs');
+CALL CreateAuditTrigger('ScheduledJobHistory');
+CALL CreateAuditTrigger('ProductCategories');
+CALL CreateAuditTrigger('ProductUnits');
+CALL CreateAuditTrigger('ProductMaster');
+CALL CreateAuditTrigger('Customers');
+CALL CreateAuditTrigger('SalesOrders');
+CALL CreateAuditTrigger('SalesOrderLines');
+CALL CreateAuditTrigger('ManufacturingWorkCenters');
+CALL CreateAuditTrigger('ManufacturingOperations');
+CALL CreateAuditTrigger('BillOfMaterials');
+CALL CreateAuditTrigger('BillOfMaterialsLine');
+CALL CreateAuditTrigger('BatchSerialNumbers');
+CALL CreateAuditTrigger('ManufacturingOrders');
+CALL CreateAuditTrigger('ManufacturingOrderLines');
+CALL CreateAuditTrigger('WorkOrders');
+CALL CreateAuditTrigger('InventoryLocations');
+CALL CreateAuditTrigger('InventoryOperationTypes');
+CALL CreateAuditTrigger('InventoryDeliveryMethods');
+CALL CreateAuditTrigger('InventoryTransactions');
+CALL CreateAuditTrigger('InventoryTransactionsLine');
+CALL CreateAuditTrigger('ReplenishmentRules');
+CALL CreateAuditTrigger('Vendors');
+CALL CreateAuditTrigger('PurchaseOrders');
+CALL CreateAuditTrigger('PurchaseOrderLines');
