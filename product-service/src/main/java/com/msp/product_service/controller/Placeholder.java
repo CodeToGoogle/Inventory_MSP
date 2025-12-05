@@ -1,1 +1,0 @@
-package com.msp.product_service.controller; public class Placeholder {}

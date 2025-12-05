@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -21,10 +23,21 @@ public class AuthController {
         return ResponseEntity.ok(resp);
     }
 
+
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshRequest req) {
-        // Basic placeholder - in prod implement refresh token flow
-        return ResponseEntity.badRequest().build();
+        LoginResponse resp = authService.refreshToken(req.getRefreshToken());
+        return ResponseEntity.ok(resp);
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(@RequestBody Map<String,String> body) {
+        String username = body.get("username");
+        String password = body.get("password");
+        String userType = body.getOrDefault("userType", "User");
+        LoginResponse resp = authService.createUserAndLogin(username, password, userType);
+        return ResponseEntity.ok(resp);
+    }
+
 }
 
