@@ -6,7 +6,7 @@
         <groupId>com.msp</groupId>
         <artifactId>msp-inventory</artifactId>
         <version>1.0.0</version>
-        <relativePath>../</relativePath> <!-- lookup parent from repository -->
+        <relativePath>../</relativePath>
     </parent>
     <artifactId>service-discovery</artifactId>
     <name>service-discovery</name>
@@ -14,13 +14,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+
+        <!-- This dependency is required for Eureka server on Java 9+ -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -36,5 +39,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

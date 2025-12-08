@@ -1,1 +1,0 @@
-package com.msp.sales_purchase_service.model; public class Placeholder {}
