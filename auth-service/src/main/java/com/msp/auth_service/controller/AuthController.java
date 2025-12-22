@@ -2,42 +2,36 @@ package com.msp.auth_service.controller;
 
 import com.msp.auth_service.dto.LoginRequest;
 import com.msp.auth_service.dto.LoginResponse;
-import com.msp.auth_service.dto.RefreshRequest;
+import com.msp.auth_service.dto.UserRegistrationRequest;
+import com.msp.auth_service.entity.User;
 import com.msp.auth_service.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication API", description = "APIs for user authentication and token management")
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest req) {
-        LoginResponse resp = authService.login(req);
-        return ResponseEntity.ok(resp);
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public User register(@RequestBody UserRegistrationRequest registrationRequest) {
+        return authService.register(registrationRequest);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest));
+    }
 
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(@RequestBody RefreshRequest req) {
-        LoginResponse resp = authService.refreshToken(req.getRefreshToken());
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<LoginResponse> refreshToken(@RequestBody String refreshToken) {
+        return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
-
-    @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(@RequestBody Map<String,String> body) {
-        String username = body.get("username");
-        String password = body.get("password");
-        String userType = body.getOrDefault("userType", "User");
-        LoginResponse resp = authService.createUserAndLogin(username, password, userType);
-        return ResponseEntity.ok(resp);
-    }
-
 }
-

@@ -18,13 +18,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<String> getRolesForUser(Integer userId) {
-        List<UserRole> urs = userRoleRepository.findByUserID(userId);
+        List<UserRole> urs = userRoleRepository.findByUser_UserId(userId);
         return urs.stream()
-                .map(ur -> roleRepository.findById(ur.getRoleID())
-                        .map(r -> r.getRoleName())
-                        .orElse(null))
-                .filter(name -> name != null)
+                .map(ur -> ur.getRole().getRoleName())
                 .collect(Collectors.toList());
     }
 }
-

@@ -1,6 +1,5 @@
 package com.msp.product_service.service;
 
-
 import com.msp.product_service.dto.UnitDto;
 import com.msp.product_service.entity.ProductUnit;
 import com.msp.product_service.repository.ProductUnitRepository;
@@ -55,4 +54,3 @@ public class UnitServiceImpl implements UnitService {
                 .collect(Collectors.toList());
     }
 }
-

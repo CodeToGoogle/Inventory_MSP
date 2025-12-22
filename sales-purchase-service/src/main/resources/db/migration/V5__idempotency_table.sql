@@ -1,0 +1,1 @@
+-- This migration is deprecated and its contents have been merged into V1__create_sales_purchase_tables.sql

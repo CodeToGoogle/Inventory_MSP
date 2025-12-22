@@ -1,7 +1,7 @@
 -- V1__product_core_tables.sql
 -- Product Categories, Product Units, Product Master
 
-CREATE TABLE IF NOT EXISTS ProductCategories (
+CREATE TABLE ProductCategories (
     CategoryID INT PRIMARY KEY AUTO_INCREMENT,
     CategoryName VARCHAR(100) UNIQUE NOT NULL,
     ParentCategoryID INT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS ProductCategories (
     FOREIGN KEY (ParentCategoryID) REFERENCES ProductCategories(CategoryID)
 );
 
-CREATE TABLE IF NOT EXISTS ProductUnits (
+CREATE TABLE ProductUnits (
     UnitID INT PRIMARY KEY AUTO_INCREMENT,
     UnitName VARCHAR(50) UNIQUE NOT NULL,
     Contains DECIMAL(10,3) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS ProductUnits (
     FOREIGN KEY (ReferenceUnitID) REFERENCES ProductUnits(UnitID)
 );
 
-CREATE TABLE IF NOT EXISTS ProductMaster (
+CREATE TABLE ProductMaster (
     ProductID INT PRIMARY KEY AUTO_INCREMENT,
     ProductName VARCHAR(200) NOT NULL,
     ProductType ENUM('Raw Material','Finished Good','Semi-Finished','Consumable','Service') NOT NULL,

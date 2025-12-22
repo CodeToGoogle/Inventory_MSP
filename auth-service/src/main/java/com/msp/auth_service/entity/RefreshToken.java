@@ -1,31 +1,34 @@
 package com.msp.auth_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
-@Table(name = "RefreshTokens")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Table(name = "refresh_tokens")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefreshToken {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tokenID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @Column(nullable = false, unique = true, length = 512)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "UserID")
+    private User user;
+
+    @Column(nullable = false, unique = true)
     private String token;
 
     @Column(nullable = false)
-    private Integer userID;
+    private Instant expiryDate;
 
     @Column(nullable = false)
-    private LocalDateTime expiryDate;
-
-    private Boolean revoked = false;
-
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() { createdAt = LocalDateTime.now(); }
+    private boolean revoked;
 }
-

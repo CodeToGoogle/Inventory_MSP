@@ -1,19 +1,29 @@
 package com.msp.product_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "ProductCategories")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductCategory {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer categoryID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "CategoryID")
+    private Integer categoryId;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "CategoryName", nullable = false, unique = true)
     private String categoryName;
 
-    private Integer parentCategoryID;
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "Description")
     private String description;
+
+    @Column(name = "ParentCategoryID")
+    private Integer parentCategoryId;
 }

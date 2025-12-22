@@ -1,25 +1,31 @@
 package com.msp.auth_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "UserRoles",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"userID","roleID"}))
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Table(name = "UserRoles")
+@Data
 public class UserRole {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer recID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "RecID")
+    private Integer recId;
 
-    private Integer userID;
-    private Integer roleID;
+    @ManyToOne
+    @JoinColumn(name = "UserID", nullable = false)
+    private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "RoleID", nullable = false)
+    private Role role;
+
+    @Column(name = "AssignedAt", updatable = false)
     private LocalDateTime assignedAt;
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         assignedAt = LocalDateTime.now();
     }
 }

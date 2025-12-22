@@ -42,5 +42,6 @@ public class Product {
     @Column(unique = true)
     private String barcode;
 
+    @Builder.Default
     private Boolean isActive = true;
 }

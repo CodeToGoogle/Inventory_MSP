@@ -14,13 +14,31 @@ public class ObjPermission {
     private Integer roleID;
     private Integer objectID;
 
-    private Boolean access = false;
-    private Boolean edit = false;
-    private Boolean delete = false;
-    private Boolean print = false;
-    private Boolean attach = false;
-    private Boolean addNotes = false;
-    private Boolean approve = false;
-    private Boolean reject = false;
-    private Boolean reset = false;
+    @Column(name = "`access`")
+    @Builder.Default
+    private Boolean canAccess = false;
+    @Column(name = "`edit`")
+    @Builder.Default
+    private Boolean canEdit = false;
+    @Column(name = "`delete`")
+    @Builder.Default
+    private Boolean canDelete = false;
+    @Column(name = "`print`")
+    @Builder.Default
+    private Boolean canPrint = false;
+    @Column(name = "`attach`")
+    @Builder.Default
+    private Boolean canAttach = false;
+    @Column(name = "`addNotes`")
+    @Builder.Default
+    private Boolean canAddNotes = false;
+    @Column(name = "`approve`")
+    @Builder.Default
+    private Boolean canApprove = false;
+    @Column(name = "`reject`")
+    @Builder.Default
+    private Boolean canReject = false;
+    @Column(name = "`reset`")
+    @Builder.Default
+    private Boolean canReset = false;
 }

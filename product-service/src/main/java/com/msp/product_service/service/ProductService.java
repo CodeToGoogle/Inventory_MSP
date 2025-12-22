@@ -1,16 +1,14 @@
 package com.msp.product_service.service;
 
-import com.msp.product_service.dto.ProductRequest;
-import com.msp.product_service.dto.ProductResponse;
+import com.msp.product_service.entity.ProductMaster;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
-    ProductResponse create(ProductRequest req);
-    ProductResponse update(Integer id, ProductRequest req);
-    ProductResponse get(Integer id);
-    List<ProductResponse> list(int page, int size, String search);
-    int pendingCount();
+    ProductMaster createProduct(ProductMaster product);
+    ProductMaster updateProduct(Integer productId, ProductMaster productDetails);
+    Optional<ProductMaster> getProductById(Integer productId);
+    Page<ProductMaster> getAllProducts(Pageable pageable);
 }
-
-

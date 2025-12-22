@@ -1,11 +1,13 @@
 package com.msp.auth_service.service;
 
 import com.msp.auth_service.entity.RefreshToken;
+import com.msp.auth_service.entity.User;
 import com.msp.auth_service.repository.RefreshTokenRepository;
+import com.msp.auth_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,14 +15,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
     @Override
     public RefreshToken createRefreshToken(Integer userId, long ttlMs) {
         String token = UUID.randomUUID().toString() + "-" + UUID.randomUUID();
-        LocalDateTime expiry = LocalDateTime.now().plusSeconds(ttlMs / 1000);
+        Instant expiry = Instant.now().plusMillis(ttlMs);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         RefreshToken rt = RefreshToken.builder()
                 .token(token)
-                .userID(userId)
+                .user(user)
                 .expiryDate(expiry)
                 .revoked(false)
                 .build();
@@ -40,13 +44,13 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public RefreshToken validateAndGet(String token) {
         return refreshTokenRepository.findByToken(token)
-                .filter(t -> !t.getRevoked())
-                .filter(t -> t.getExpiryDate().isAfter(LocalDateTime.now()))
+                .filter(t -> !t.isRevoked())
+                .filter(t -> t.getExpiryDate().isAfter(Instant.now()))
                 .orElse(null);
     }
 
     @Override
     public void revokeAllForUser(Integer userId) {
-        refreshTokenRepository.deleteByUserID(userId);
+        refreshTokenRepository.deleteByUser_UserId(userId);
     }
 }

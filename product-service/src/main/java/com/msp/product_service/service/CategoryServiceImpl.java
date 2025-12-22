@@ -18,11 +18,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto create(CategoryDto dto) {
         ProductCategory p = ProductCategory.builder()
                 .categoryName(dto.getCategoryName())
-                .parentCategoryID(dto.getParentCategoryID())
+                .parentCategoryId(dto.getParentCategoryID())
                 .description(dto.getDescription())
                 .build();
         ProductCategory saved = repo.save(p);
-        dto.setCategoryID(saved.getCategoryID());
+        dto.setCategoryID(saved.getCategoryId());
         return dto;
     }
 
@@ -30,24 +30,23 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(Integer id, CategoryDto dto) {
         ProductCategory p = repo.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
         p.setCategoryName(dto.getCategoryName());
-        p.setParentCategoryID(dto.getParentCategoryID());
+        p.setParentCategoryId(dto.getParentCategoryID());
         p.setDescription(dto.getDescription());
         repo.save(p);
-        dto.setCategoryID(p.getCategoryID());
+        dto.setCategoryID(p.getCategoryId());
         return dto;
     }
 
     @Override
     public CategoryDto get(Integer id) {
-        return repo.findById(id).map(c -> new CategoryDto(c.getCategoryID(), c.getCategoryName(), c.getParentCategoryID(), c.getDescription()))
+        return repo.findById(id).map(c -> new CategoryDto(c.getCategoryId(), c.getCategoryName(), c.getParentCategoryId(), c.getDescription()))
                 .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     @Override
     public List<CategoryDto> list() {
         return repo.findAll().stream()
-                .map(c -> new CategoryDto(c.getCategoryID(), c.getCategoryName(), c.getParentCategoryID(), c.getDescription()))
+                .map(c -> new CategoryDto(c.getCategoryId(), c.getCategoryName(), c.getParentCategoryId(), c.getDescription()))
                 .collect(Collectors.toList());
     }
 }
-

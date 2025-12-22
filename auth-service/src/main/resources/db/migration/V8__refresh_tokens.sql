@@ -1,5 +1,5 @@
 -- V8__refresh_tokens.sql
-CREATE TABLE IF NOT EXISTS RefreshTokens (
+CREATE TABLE RefreshTokens (
     TokenID BIGINT PRIMARY KEY AUTO_INCREMENT,
     Token VARCHAR(512) NOT NULL UNIQUE,
     UserID INT NOT NULL,
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS RefreshTokens (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
-CREATE INDEX IF NOT EXISTS idx_refresh_user ON RefreshTokens(UserID);
-CREATE INDEX IF NOT EXISTS idx_refresh_token ON RefreshTokens(Token);
+CREATE INDEX idx_refresh_user ON RefreshTokens(UserID);
+CREATE INDEX idx_refresh_token ON RefreshTokens(Token);

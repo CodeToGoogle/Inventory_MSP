@@ -1,11 +1,12 @@
 package com.msp.auth_service.service;
 
-
 import com.msp.auth_service.dto.LoginRequest;
 import com.msp.auth_service.dto.LoginResponse;
+import com.msp.auth_service.dto.UserRegistrationRequest;
+import com.msp.auth_service.entity.User;
 
 public interface AuthService {
-    LoginResponse login(LoginRequest req);
+    User register(UserRegistrationRequest registrationRequest);
+    LoginResponse login(LoginRequest loginRequest);
     LoginResponse refreshToken(String refreshToken);
-    LoginResponse createUserAndLogin(String username, String password, String userType);
 }

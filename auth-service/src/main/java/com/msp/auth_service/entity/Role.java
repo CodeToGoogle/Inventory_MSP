@@ -1,27 +1,29 @@
 package com.msp.auth_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Roles")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
 public class Role {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer roleID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "RoleID")
+    private Integer roleId;
 
-    @Column(nullable=false, unique=true, length=50)
+    @Column(name = "RoleName", nullable = false, unique = true)
     private String roleName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "Description")
     private String description;
 
+    @Column(name = "CreatedAt", updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
 }

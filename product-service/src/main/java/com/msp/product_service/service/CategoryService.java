@@ -10,4 +10,3 @@ public interface CategoryService {
     CategoryDto get(Integer id);
     List<CategoryDto> list();
 }
-

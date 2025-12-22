@@ -11,12 +11,11 @@ SELECT
  SUM(sol.OrderedQty) AS TotalQuantity,
  so.OrderStatus,
  so.DeliveryStatus,
- u.UserName AS CreatedBy
+ so.CreatedBy AS CreatedBy
 FROM SalesOrders so
 JOIN SalesOrderLines sol ON so.OrderID = sol.OrderID
 JOIN Customers c ON so.CustomerID = c.CustomerID
-LEFT JOIN Users u ON so.CreatedBy = u.UserID
-GROUP BY so.OrderID, so.OrderNumber, so.OrderDate, c.CustomerName, so.OrderStatus, so.DeliveryStatus, u.UserName;
+GROUP BY so.OrderID, so.OrderNumber, so.OrderDate, c.CustomerName, so.OrderStatus, so.DeliveryStatus, so.CreatedBy;
 
 CREATE OR REPLACE VIEW PurchaseSummary AS
 SELECT

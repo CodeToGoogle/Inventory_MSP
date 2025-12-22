@@ -1,0 +1,12 @@
+-- V2__vendors.sql
+
+CREATE TABLE Vendors (
+    VendorID INT PRIMARY KEY AUTO_INCREMENT,
+    VendorName VARCHAR(100) NOT NULL,
+    ContactName VARCHAR(100),
+    ContactEmail VARCHAR(100),
+    PhoneNumber VARCHAR(20),
+    Address VARCHAR(255),
+    IsActive BOOLEAN DEFAULT TRUE,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
