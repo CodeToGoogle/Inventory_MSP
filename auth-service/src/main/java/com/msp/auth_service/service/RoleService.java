@@ -5,4 +5,3 @@ import java.util.List;
 public interface RoleService {
     List<String> getRolesForUser(Integer userId);
 }
-

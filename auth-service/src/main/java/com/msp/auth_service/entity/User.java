@@ -1,48 +1,53 @@
 package com.msp.auth_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Users")
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer userID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UserID")
+    private Integer userId;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "UserName", nullable = false, unique = true)
     private String userName;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "EncryptedPassword", nullable = false)
     private String encryptedPassword;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "UserType", nullable = false)
     private UserType userType;
 
+    @Column(name = "IsActive")
+    @Builder.Default
     private Boolean isActive = true;
 
+    @Column(name = "CreatedAt", updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void prePersist() {
+    protected void onCreate() {
         createdAt = LocalDateTime.now();
-        updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    public void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
 
-    public enum UserType {
-        Admin, Manager, User, Operator
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

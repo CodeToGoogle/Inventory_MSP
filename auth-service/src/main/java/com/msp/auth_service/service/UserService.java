@@ -1,6 +1,5 @@
 package com.msp.auth_service.service;
 
-
 import com.msp.auth_service.dto.UserDto;
 
 import java.util.Optional;

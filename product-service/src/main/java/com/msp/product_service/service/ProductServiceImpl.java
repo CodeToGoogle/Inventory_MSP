@@ -1,113 +1,69 @@
 package com.msp.product_service.service;
 
-import com.msp.product_service.dto.ProductRequest;
-import com.msp.product_service.dto.ProductResponse;
-import com.msp.product_service.entity.Product;
-import com.msp.product_service.event.ProductEventProducer;
+import com.msp.product_service.entity.ProductMaster;
+import com.msp.product_service.exception.DuplicateSkuException;
 import com.msp.product_service.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.math.BigDecimal;
+import org.springframework.web.server.ResponseStatusException;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repo;
-    private final ProductEventProducer eventProducer;
+    private final ProductRepository productRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public ProductResponse create(ProductRequest req) {
-        Product p = Product.builder()
-                .productName(req.getProductName())
-                .productType(req.getProductType())
-                .productCategoryID(req.getProductCategoryID())
-                .unitID(req.getUnitID())
-                .qtyOnHand(req.getQtyOnHand())
-                .reorderLevel(req.getReorderLevel())
-                .safetyStock(req.getSafetyStock())
-                .costPrice(req.getCostPrice())
-                .sellingPrice(req.getSellingPrice())
-                .sku(req.getSku())
-                .barcode(req.getBarcode())
-                .isActive(true)
-                .build();
-        Product saved = repo.save(p);
-        log.info("product.created productID={}", saved.getProductID());
-        eventProducer.publishProductCreated(saved);
-        return toResponse(saved);
-    }
-
-    @Override
-    public ProductResponse update(Integer id, ProductRequest req) {
-        Product p = repo.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        p.setProductName(req.getProductName());
-        p.setProductType(req.getProductType());
-        p.setProductCategoryID(req.getProductCategoryID());
-        p.setUnitID(req.getUnitID());
-        p.setQtyOnHand(req.getQtyOnHand());
-        p.setReorderLevel(req.getReorderLevel());
-        p.setSafetyStock(req.getSafetyStock());
-        p.setCostPrice(req.getCostPrice());
-        p.setSellingPrice(req.getSellingPrice());
-        p.setSku(req.getSku());
-        p.setBarcode(req.getBarcode());
-        Product saved = repo.save(p);
-        eventProducer.publishProductUpdated(saved);
-        return toResponse(saved);
-    }
-
-    @Override
-    public ProductResponse get(Integer id) {
-        return repo.findById(id).map(this::toResponse).orElseThrow(() -> new RuntimeException("Product not found"));
-    }
-
-    @Override
-    public List<ProductResponse> list(int page, int size, String search) {
-        Pageable pg = PageRequest.of(Math.max(0, page), Math.max(1, size), Sort.by("productID").descending());
-        Page<Product> p;
-        if (search == null || search.isBlank()) {
-            p = repo.findAll(pg);
-        } else {
-            p = new PageImpl<>(repo.findByProductNameContainingIgnoreCase(search)); // simple fallback; could implement paged search
+    public ProductMaster createProduct(ProductMaster product) {
+        try {
+            ProductMaster savedProduct = productRepository.save(product);
+            kafkaTemplate.send("product.created", savedProduct);
+            return savedProduct;
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateSkuException("Product with SKU " + product.getSku() + " already exists");
         }
-        return p.stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     @Override
-    public int pendingCount() {
-        long missingUnit = repo.countByUnitIDIsNull();
-        long missingCategory = repo.countByProductCategoryIDIsNull();
-        long lowStock = repo.countByLowStock();
-        long missingSku = repo.countBySkuIsNullOrBlank();
-        return (int)(missingUnit + missingCategory + lowStock + missingSku);
+    public ProductMaster updateProduct(Integer productId, ProductMaster productDetails) {
+        ProductMaster product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + productId));
+
+        product.setProductName(productDetails.getProductName());
+        product.setSku(productDetails.getSku());
+        // Description field removed from entity
+        product.setProductCategoryId(productDetails.getProductCategoryId());
+        product.setUnitId(productDetails.getUnitId());
+        product.setCostPrice(productDetails.getCostPrice());
+        product.setSellingPrice(productDetails.getSellingPrice());
+        product.setReorderLevel(productDetails.getReorderLevel());
+        product.setSafetyStock(productDetails.getSafetyStock());
+        product.setIsActive(productDetails.getIsActive());
+
+        try {
+            ProductMaster updatedProduct = productRepository.save(product);
+            kafkaTemplate.send("product.updated", updatedProduct);
+            return updatedProduct;
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateSkuException("Product with SKU " + productDetails.getSku() + " already exists");
+        }
     }
 
-    private ProductResponse toResponse(Product p) {
-        return ProductResponse.builder()
-                .productID(p.getProductID())
-                .productName(p.getProductName())
-                .productType(p.getProductType())
-                .productCategoryID(p.getProductCategoryID())
-                .unitID(p.getUnitID())
-                .qtyOnHand(p.getQtyOnHand())
-                .reorderLevel(p.getReorderLevel())
-                .safetyStock(p.getSafetyStock())
-                .costPrice(p.getCostPrice())
-                .sellingPrice(p.getSellingPrice())
-                .sku(p.getSku())
-                .barcode(p.getBarcode())
-                .isActive(p.getIsActive())
-                .build();
+    @Override
+    public Optional<ProductMaster> getProductById(Integer productId) {
+        return productRepository.findById(productId);
+    }
+
+    @Override
+    public Page<ProductMaster> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 }

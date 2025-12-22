@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/api/products/categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService svc;
@@ -33,4 +33,3 @@ public class CategoryController {
         return ResponseEntity.ok(svc.list());
     }
 }
-

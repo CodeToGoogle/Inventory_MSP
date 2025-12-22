@@ -1,17 +1,15 @@
 package com.msp.product_service.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import lombok.*;
-import jakarta.validation.constraints.*;
-
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryDto {
     private Integer categoryID;
-
-    @NotBlank
     private String categoryName;
-
     private Integer parentCategoryID;
     private String description;
 }
-

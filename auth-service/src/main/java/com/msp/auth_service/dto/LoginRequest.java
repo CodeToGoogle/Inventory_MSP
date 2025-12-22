@@ -1,8 +1,8 @@
 package com.msp.auth_service.dto;
 
-import lombok.*;
+import lombok.Data;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Data
 public class LoginRequest {
     private String username;
     private String password;

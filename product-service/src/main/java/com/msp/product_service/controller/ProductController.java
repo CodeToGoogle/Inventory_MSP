@@ -1,55 +1,48 @@
 package com.msp.product_service.controller;
 
-
-import com.msp.product_service.dto.ProductRequest;
-import com.msp.product_service.dto.ProductResponse;
+import com.msp.product_service.entity.ProductMaster;
 import com.msp.product_service.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.validation.annotation.Validated;
-
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
-@Validated
+@Tag(name = "Product API", description = "APIs for managing products")
 public class ProductController {
-    private final ProductService svc;
+
+    private final ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@RequestBody @Validated ProductRequest req) {
-        return ResponseEntity.ok(svc.create(req));
+    @Operation(summary = "Create a new product")
+    public ProductMaster createProduct(@RequestBody ProductMaster product) {
+        return productService.createProduct(product);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResponse> update(@PathVariable Integer id, @RequestBody @Validated ProductRequest req) {
-        return ResponseEntity.ok(svc.update(id, req));
+    @Operation(summary = "Update an existing product")
+    public ResponseEntity<ProductMaster> updateProduct(@PathVariable(value = "id") Integer productId,
+                                                       @RequestBody ProductMaster productDetails) {
+        ProductMaster updatedProduct = productService.updateProduct(productId, productDetails);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> get(@PathVariable Integer id) {
-        return ResponseEntity.ok(svc.get(id));
+    @Operation(summary = "Get a product by ID")
+    public ResponseEntity<ProductMaster> getProductById(@PathVariable(value = "id") Integer productId) {
+        return productService.getProductById(productId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> list(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size,
-            @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(svc.list(page, size, search));
-    }
-
-    @GetMapping("/pending")
-    public ResponseEntity<Map<String, Object>> pending() {
-        int count = svc.pendingCount();
-        return ResponseEntity.ok(Map.of(
-                "products_missing_unit", count // simplified single metric; gateway expects JSON keys
-        ));
+    @Operation(summary = "Get all products with pagination")
+    public Page<ProductMaster> getAllProducts(Pageable pageable) {
+        return productService.getAllProducts(pageable);
     }
 }
-
-

@@ -7,6 +7,7 @@ import java.time.Instant;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ApiError {
+    @Builder.Default
     private Instant timestamp = Instant.now();
     private int status;
     private String error;

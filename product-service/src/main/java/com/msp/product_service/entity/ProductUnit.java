@@ -1,21 +1,37 @@
 package com.msp.product_service.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ProductUnits")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductUnit {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "UnitID")
     private Integer unitID;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "UnitName", nullable = false, unique = true)
     private String unitName;
 
-    private Double contains;
+    @Column(name = "Contains")
+    private BigDecimal contains;
+
+    @Column(name = "ReferenceUnitID")
     private Integer referenceUnitID;
-    private Double conversionFactor;
+
+    @Column(name = "ConversionFactor")
+    private BigDecimal conversionFactor;
+
+    @Column(name = "IsBaseUnit")
     private Boolean isBaseUnit;
 }
-
