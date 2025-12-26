@@ -48,7 +48,7 @@ public class SalesOrder {
     @Column(name = "UpdatedAt")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // Changed to LAZY
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

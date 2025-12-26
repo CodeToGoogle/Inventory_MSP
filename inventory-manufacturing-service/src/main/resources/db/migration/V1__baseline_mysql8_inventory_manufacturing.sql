@@ -3,17 +3,21 @@
 CREATE TABLE ProductMaster (
     ProductID INT PRIMARY KEY AUTO_INCREMENT,
     ProductName VARCHAR(100) NOT NULL,
-    ProductCode VARCHAR(50) UNIQUE,
+    SKU VARCHAR(50) UNIQUE,
+    ProductType VARCHAR(50), -- Added
     Description TEXT,
     CategoryID INT,
     BaseUnitID INT,
+    CostPrice DECIMAL(15,2), -- Added
+    SellingPrice DECIMAL(15,2), -- Added
     IsActive BOOLEAN DEFAULT TRUE,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     QtyOnHand DECIMAL(15,3) DEFAULT 0,
     ReservedQty DECIMAL(15,3) DEFAULT 0,
     ReorderLevel DECIMAL(15,3) DEFAULT 0,
-    SafetyStock DECIMAL(15,3) DEFAULT 0
+    SafetyStock DECIMAL(15,3) DEFAULT 0,
+    version BIGINT NOT NULL DEFAULT 0 -- Added for optimistic locking
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE ProductUnits (

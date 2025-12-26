@@ -13,6 +13,7 @@ public class SalesOrderResponse {
     private Integer customerId;
     private String orderStatus;
     private BigDecimal totalAmount;
+    private BigDecimal totalQty; // Added this field
     private List<SalesOrderLineResponse> lines;
 
     @Data

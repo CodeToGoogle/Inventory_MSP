@@ -16,13 +16,13 @@ public class ProductMaster {
     @Column(name = "ProductName")
     private String productName;
 
-    @Column(name = "SKU")
+    @Column(name = "SKU") // Standardized to SKU
     private String sku;
 
     @Column(name = "ProductType")
     private String productType;
 
-    @Column(name = "CategoryID") // Corrected from ProductCategoryID
+    @Column(name = "CategoryID")
     private Integer categoryID;
 
     @Column(name = "BaseUnitID")

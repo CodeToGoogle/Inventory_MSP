@@ -5,7 +5,7 @@ CREATE OR REPLACE VIEW InventoryLevels AS
 SELECT
  p.ProductID,
  p.ProductName,
- p.ProductCode AS SKU,
+ p.SKU, -- Changed from p.ProductCode AS SKU because the column is now named SKU
  c.CategoryName,
  SUM(
    CASE
@@ -25,5 +25,5 @@ LEFT JOIN InventoryOperationTypes ot ON it.OperationTypeID = ot.OperationTypeID
 LEFT JOIN ProductCategories c ON p.CategoryID = c.CategoryID
 LEFT JOIN ProductUnits u ON p.BaseUnitID = u.UnitID
 GROUP BY
- p.ProductID, p.ProductName, p.ProductCode, c.CategoryName,
+ p.ProductID, p.ProductName, p.SKU, c.CategoryName,
  p.BaseUnitID, u.UnitName, p.ReorderLevel, p.SafetyStock;
