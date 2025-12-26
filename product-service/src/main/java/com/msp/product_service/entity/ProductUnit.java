@@ -23,7 +23,7 @@ public class ProductUnit {
     @Column(name = "UnitName", nullable = false, unique = true)
     private String unitName;
 
-    @Column(name = "Contains")
+    @Column(name = "Contains", nullable = false)
     private BigDecimal contains;
 
     @Column(name = "ReferenceUnitID")
